@@ -328,7 +328,7 @@ async function fetchDescriptionFromChatGPT(objectName) {
     objectDescriptionButton.html(texts[lang].loading);
 
     try {
-        const response = await fetch("api/chatgpt.php", {
+        const response = await fetch("https://muzerehberi.com.tr/api/chatgpt.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
