@@ -1,7 +1,7 @@
 let video;
 let label = "Model yükleniyor";
 let classifier;
-let modelURL = "https://teachablemachine.withgoogle.com/models/lkxoJtDrs/";
+let modelURL = "./model/";
 let speech;
 let lastLabel = "";
 let t = 0;
@@ -312,6 +312,19 @@ function gotResults(error, results) {
 }
 
 async function fetchDescriptionFromChatGPT(objectName) {
+    // Eğer offline isek, direkt mesaj göster
+    if (!navigator.onLine) {
+        const msg = "İnternet yok, açıklama gösterilemiyor.";
+        objectDescriptionButton.html(msg);
+
+        if (isSoundOn && speech) {
+            speech.cancel();
+            speech.speak(msg);
+        }
+        return;
+    }
+
+    // Online isek ChatGPT'den çek
     objectDescriptionButton.html(texts[lang].loading);
 
     try {
@@ -321,7 +334,7 @@ async function fetchDescriptionFromChatGPT(objectName) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                systemPrompt: `Sen Osmanlı Mezar Taşı başlıkları ve sembolleri konusunda uzmansın. Kullanıcının kamerasında görünen sembolün kısa, anlaşılır ve eğitici açıklamasını yap. Açıklama ${lang} dilinde olmalı. Açıklamanın sonunda sohbet sayfasına yönlendiren sıcak bir cümleyle bitir. Bilgiler Osmanlı taşındaki başlıklar ve semboller hakkında olacak. Başka bir bağlamda bilgi verilmeyecek. Ekranda görsel değiştiğinde konuşmayı bitir.`,
+                systemPrompt: `Sen Osmanlı Mezar Taşı başlıkları ve sembolleri konusunda uzmansın. Kullanıcının kamerasında görünen sembolün adını söyle ve bir cümle ile bu başlığın sosyal hayatta kimler tarafından kullanıldığını açıkla. Açıklama ${lang} dilinde olmalı. Açıklamanın sonunda sohbet sayfasına yönlendiren sıcak bir cümleyle bitir. Bilgiler Osmanlı taşındaki başlıklar ve semboller hakkında olacak. Başka bir bağlamda bilgi verilmeyecek. Ekranda görsel değiştiğinde konuşmayı bitir.`,
                 userPrompt: `Lütfen şu sembolü ${lang} dilinde açıkla ve sohbet sayfasına yönlendir: ${objectName}`,
                 lang: lang
             })
@@ -336,14 +349,23 @@ async function fetchDescriptionFromChatGPT(objectName) {
         const description = data.message.trim();
         objectDescriptionButton.html(description);
 
-        if (isSoundOn) {
+        if (isSoundOn && speech) {
             speech.cancel();
             speech.speak(description);
         }
 
     } catch (error) {
         console.error("API hatası:", error);
-        objectDescriptionButton.html("Açıklama alınamadı.");
+        const msg = "Açıklama alınamadı.";
+        objectDescriptionButton.html(msg);
+
+        if (isSoundOn && speech) {
+            speech.cancel();
+            speech.speak(msg);
+        }
+    }
+}
+
     }
 }
 
