@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <meta name="description"
+    content="Müze Rehberi: Mezar Taşları Konuşuyor — kamera ile mezar taşı tara, yapay zekâ ile sohbet et, başlık ve motifleri incele, sanal müzeyi gez, 3D deneyimle keşfet." />
+  <meta name="keywords"
+    content="müze rehberi, osmanlı mezar taşları, mezar taşı, başlık ve motifler, yapay zekâ, sanal müze, 3d, artırılmış gerçeklik, kültürel miras" />
+  <meta name="robots" content="index, follow" />
+
+  <title>Müze Rehberi - Mezar Taşları Konuşuyor</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <style>
+    :root {
+      --bg: #f2f2f2;
+      --card: #e6e6e6;
+      --text: #111;
+      --muted: #666;
+
+      --radius: 14px;
+      --shadow: 0 10px 26px rgba(0, 0, 0, .10);
+      --btnRatio: 4 / 3;
+      --glow: rgba(52, 199, 89, .38);
+
+      --white: rgba(255, 255, 255, .92);
+      --white2: rgba(255, 255, 255, .78);
+      --ink: rgba(0, 0, 0, .16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f8f8f8;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .container {
+      width: min(100%, 720px);
+      background: var(--bg);
+      border-radius: 10px;
+      padding: 18px;
+    }
+
+    .box {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 18px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, .08);
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 7.2vw, 56px);
+      letter-spacing: .6px;
+      line-height: 1.05;
+    }
+
+    .subtitle {
+      margin: 0 0 14px;
+      font-weight: 800;
+      color: #000;
+      font-size: 14px;
+    }
+
+    .subdesc {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .hero-img {
+      width: min(520px, 100%);
+      border-radius: 10px;
+      display: block;
+      margin: 0 auto 14px;
+      box-shadow: 0 10px 18px rgba(0, 0, 0, .10);
+    }
+
+    .buton-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 380px) {
+      .buton-grid {
+        gap: 10px;
+      }
+
+      .box {
+        padding: 14px;
+      }
+
+      .container {
+        padding: 14px;
+      }
+    }
+
+    .img-btn {
+      position: relative;
+      display: block;
+      aspect-ratio: var(--btnRatio);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, .10);
+      transform: translateY(0) scale(1);
+      transition: transform .10s ease, box-shadow .15s ease;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      text-decoration: none;
+      color: inherit;
+      border: 1px solid rgba(0, 0, 0, .06);
+      cursor: pointer;
+    }
+
+    .img-btn .bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0, 0, 0, .12), rgba(0, 0, 0, .02));
+    }
+
+    .img-btn .bg:after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(120px 120px at 18% 20%, rgba(255, 255, 255, .22), transparent 60%),
+        radial-gradient(160px 160px at 80% 30%, rgba(255, 255, 255, .14), transparent 60%),
+        radial-gradient(220px 220px at 40% 90%, rgba(0, 0, 0, .12), transparent 60%);
+      opacity: .95;
+    }
+
+    .img-btn .icon {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, .28);
+      border: 1px solid rgba(255, 255, 255, .35);
+      box-shadow: 0 10px 18px rgba(0, 0, 0, .12);
+      backdrop-filter: blur(6px);
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .img-btn .label {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      background: transparent;
+      border: none;
+      color: var(--white);
+      font-weight: 900;
+      font-size: 14px;
+      letter-spacing: .2px;
+      text-align: center;
+      text-shadow:
+        0 2px 10px rgba(0, 0, 0, .35),
+        0 1px 2px rgba(0, 0, 0, .45);
+    }
+
+    .img-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, .14);
+    }
+
+    .img-btn:active {
+      transform: scale(.97);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, .12);
+    }
+
+    .img-btn.glow {
+      animation: glow .42s ease-out;
+    }
+
+    @keyframes glow {
+      0% {
+        box-shadow: 0 8px 18px rgba(0, 0, 0, .10);
+      }
+
+      45% {
+        box-shadow:
+          0 0 0 7px var(--glow),
+          0 16px 34px rgba(0, 0, 0, .14);
+      }
+
+      100% {
+        box-shadow: 0 8px 18px rgba(0, 0, 0, .10);
+      }
+    }
+
+    :focus-visible {
+      outline: 3px solid rgba(52, 199, 89, .35);
+      outline-offset: 2px;
+      border-radius: var(--radius);
+    }
+
+    .g-kamera .bg {
+      background: linear-gradient(135deg, #34C759, #12b981);
+    }
+
+    .g-sohbet .bg {
+      background: linear-gradient(135deg, #4F46E5, #22C1C3);
+    }
+
+    .g-baslik .bg {
+      background: linear-gradient(135deg, #F59E0B, #EF4444);
+    }
+
+    .g-sanal .bg {
+      background: linear-gradient(135deg, #06B6D4, #3B82F6);
+    }
+
+    .g-ucd .bg {
+      background: linear-gradient(135deg, #A855F7, #EC4899);
+    }
+
+    .g-android .bg {
+      background: linear-gradient(135deg, #111827, #22C55E);
+    }
+
+    footer {
+      margin-top: 14px;
+      padding-top: 12px;
+      font-size: 14px;
+      color: var(--muted);
+    
+    }
+
+    /* =========================
+       ANDROID.jpg Tam ekran modal
+       ========================= */
+    .fullscreen-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, .88);
+      z-index: 99999;
+    }
+
+    .fullscreen-modal.open {
+      display: flex;
+    }
+
+    /* Görsel her cihazda tam ekran sığar */
+    .fullscreen-modal img {
+      width: 100vw;
+      height: 100vh;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Kapat (X) */
+    .modal-close-x {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 24px;
+      line-height: 1;
+      font-weight: 900;
+      color: #fff;
+      background: rgba(0, 0, 0, .45);
+      border: 1px solid rgba(255, 255, 255, .25);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .modal-close-x:hover {
+      background: rgba(0, 0, 0, .65);
+    }
+
+    .modal-close-x:active {
+      transform: scale(.96);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="box">
+      <h1>MÜZE REHBERİ</h1>
+      <div class="subtitle">Mezar Taşları Konuşuyor</div>
+      <p class="subdesc">
+        Kamera ile mezar taşını tarayın; başlık ve motifleri tanıyın, anında bilgi alın.
+        Yapay zekâ sohbet, sanal müze ve 3D deneyim.
+      </p>
+
+      <img class="hero-img" src="foto.png" alt="Müze Rehberi uygulaması görseli" />
+
+      <div class="buton-grid" aria-label="Kısayollar">
+
+        <a class="img-btn g-kamera" href="deneme/index.html" aria-label="Mezar Taşı Tara">
+          <span class="bg" aria-hidden="true"></span>
+          <span class="icon" aria-hidden="true">📷</span>
+          <span class="label">Mezar Taşı Tara</span>
+        </a>
+
+        <a class="img-btn g-sohbet" href="sohbet.html" aria-label="AI Sohbet">
+          <span class="bg" aria-hidden="true"></span>
+          <span class="icon" aria-hidden="true">💬</span>
+          <span class="label">AI Sohbet</span>
+        </a>
+
+        <a class="img-btn g-baslik" href="sembol/sembol.html" aria-label="Başlık ve Motifler">
+          <span class="bg" aria-hidden="true"></span>
+          <span class="icon" aria-hidden="true">🏛️</span>
+          <span class="label">Başlık ve Motifler</span>
+        </a>
+
+        <a class="img-btn g-sanal" href="sanalmuze.html" aria-label="Sanal Müze">
+          <span class="bg" aria-hidden="true"></span>
+          <span class="icon" aria-hidden="true">🧭</span>
+          <span class="label">Sanal Müze</span>
+        </a>
+
+        <a class="img-btn g-ucd" href="ar/ar.html" aria-label="3D Tasarım">
+          <span class="bg" aria-hidden="true"></span>
+          <span class="icon" aria-hidden="true">🧊</span>
+          <span class="label">3D Tasarım</span>
+        </a>
+
+        <!-- ✅ Android butonu: tıklanınca android.jpg açılır -->
+        <a class="img-btn g-android" href="#" id="androidBtn" aria-label="Android görselini aç">
+          <span class="bg" aria-hidden="true"></span>
+          <span class="icon" aria-hidden="true">🤖</span>
+          <span class="label">Android</span>
+        </a>
+
+      </div>
+
+      <footer>
+        &copy; <span id="year"></span>, Müze Rehberi
+      </footer>
+
+      <div id="sayac">
+        <iframe src="sayac.php" scrolling="no" title="Ziyaret sayacı"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANDROID.jpg Tam ekran modal -->
+  <div id="androidModal" class="fullscreen-modal" aria-hidden="true">
+    <button type="button" class="modal-close-x" id="androidClose" aria-label="Kapat">×</button>
+    <img src="android.jpg" alt="Android uygulama görseli">
+  </div>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Parıltı efekti
+    const buttons = document.querySelectorAll(".img-btn");
+    function glow(el) {
+      el.classList.remove("glow");
+      void el.offsetWidth;
+      el.classList.add("glow");
+      setTimeout(() => el.classList.remove("glow"), 450);
+    }
+    buttons.forEach((btn) => {
+      btn.addEventListener("click", () => glow(btn));
+      btn.addEventListener("touchstart", () => glow(btn), { passive: true });
+    });
+
+    // ✅ Android görsel modal
+    const androidBtn = document.getElementById("androidBtn");
+    const androidModal = document.getElementById("androidModal");
+    const androidClose = document.getElementById("androidClose");
+
+    function openAndroidModal() {
+      androidModal.classList.add("open");
+      androidModal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeAndroidModal() {
+      androidModal.classList.remove("open");
+      androidModal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    }
+
+    androidBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      openAndroidModal();
+    });
+
+    androidClose.addEventListener("click", closeAndroidModal);
+
+    // Karanlık alana tıklayınca kapat
+    androidModal.addEventListener("click", (e) => {
+      if (e.target === androidModal) closeAndroidModal();
+    });
+
+    // ESC ile kapat
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && androidModal.classList.contains("open")) {
+        closeAndroidModal();
+      }
+    });
+  </script>
+</body>
+
+</html>

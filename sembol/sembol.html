@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Semboller</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            font-size: calc(2em + 1vw);
+            margin: 20px 0;
+        }
+
+        .container {
+            width: min(100%, 900px);
+            margin: 16px auto;
+            padding: 18px;
+            background-color: #f2f2f2;
+            border-radius: 10px;
+        }
+
+        .box {
+            background-color: #E0E0E0;
+            border-radius: 10px;
+            padding: 18px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            width: 92%;
+            margin: 0 auto;
+            padding: 10px 0 20px;
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform .15s ease, box-shadow .15s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .card-image:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 18px rgba(0, 0, 0, 0.22);
+        }
+
+        .card-title {
+            margin-top: 8px;
+            padding: 6px 10px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: calc(0.55em + 0.25vw);
+            max-width: 160px;
+        }
+
+        .redirect-container {
+            margin: 22px 0 10px;
+        }
+
+        .redirect-div {
+            display: block;
+            width: min(420px, 90%);
+            margin: 10px auto;
+            padding: 15px 25px;
+            background-color: #34C759;
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.25s ease, transform 0.25s ease;
+        }
+
+        .redirect-div:hover {
+            background-color: #ff9500;
+            transform: scale(1.03);
+        }
+
+        /* =========================
+       MODAL (Tam ekran önizleme)
+       ========================= */
+        .modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            background: rgba(0, 0, 0, .72);
+            z-index: 9999;
+        }
+
+        .modal.open {
+            display: flex;
+        }
+
+        .modal-content {
+            width: min(92vw, 860px);
+            background: #fff;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 18px 60px rgba(0, 0, 0, .35);
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px 14px;
+            background: #f7f7f7;
+            border-bottom: 1px solid rgba(0, 0, 0, .10);
+            text-align: left;
+        }
+
+        .modal-title {
+            font-weight: 900;
+            color: #111;
+            font-size: 14px;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .modal-close {
+            border: none;
+            background: #34C759;
+            color: #fff;
+            font-weight: 800;
+            padding: 10px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform .1s ease, background-color .2s ease;
+        }
+
+        .modal-close:hover {
+            background: #ff9500;
+            transform: scale(1.03);
+        }
+
+        .modal-body {
+            padding: 14px;
+            background: #fff;
+            position: relative;
+            touch-action: pan-y;
+            /* mobilde dikey scrollu engellemeden swipe algıla */
+        }
+
+        .modal-body img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 12px;
+            background: #fff;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        /* ✅ Önceki/Sonraki butonları */
+        .modal-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, .25);
+            background: rgba(0, 0, 0, .40);
+            color: #fff;
+            font-size: 24px;
+            font-weight: 900;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            transition: transform .12s ease, background-color .2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .modal-nav:hover {
+            background: rgba(0, 0, 0, .55);
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .modal-nav:active {
+            transform: translateY(-50%) scale(.96);
+        }
+
+        .modal-prev {
+            left: 12px;
+        }
+
+        .modal-next {
+            right: 12px;
+        }
+
+        /* Bilgi etiketi (1/22 gibi) */
+        .modal-counter {
+            font-weight: 700;
+            color: #555;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .card-container {
+                grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+                gap: 14px;
+            }
+
+            .card-image {
+                width: 80px;
+                height: 80px;
+            }
+
+            .card-title {
+                font-size: 12px;
+                max-width: 140px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card-title {
+                font-size: 10px;
+            }
+
+            .modal-nav {
+                width: 40px;
+                height: 40px;
+                font-size: 22px;
+            }
+        }
+
+        :focus-visible {
+            outline: 3px solid rgba(52, 199, 89, .35);
+            outline-offset: 2px;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="box">
+            <h1>Osmanlı Dönemi Mezar Taşı Başlıkları</h1>
+
+            <div class="card-container">
+                <div class="card"><img src="sembolfoto/dardagan.png" alt="Dardağan" class="card-image">
+                    <div class="card-title">Dardağan</div>
+                </div>
+                <div class="card"><img src="sembolfoto/hamidi.png" alt="Hamidi Fes" class="card-image">
+                    <div class="card-title">Hamidi Fes</div>
+                </div>
+                <div class="card"><img src="sembolfoto/mahmudi.png" alt="Mahmudi Fes" class="card-image">
+                    <div class="card-title">Mahmudi Fes</div>
+                </div>
+                <div class="card"><img src="sembolfoto/horasani.png" alt="Horasani" class="card-image">
+                    <div class="card-title">Horasani</div>
+                </div>
+                <div class="card"><img src="sembolfoto/katibi.png" alt="Katibi" class="card-image">
+                    <div class="card-title">Katibi</div>
+                </div>
+                <div class="card"><img src="sembolfoto/katibi2.png" alt="Katibi" class="card-image">
+                    <div class="card-title">Katibi</div>
+                </div>
+                <div class="card"><img src="sembolfoto/nezkeb.png" alt="Nezkeb" class="card-image">
+                    <div class="card-title">Nezkeb</div>
+                </div>
+                <div class="card"><img src="sembolfoto/mucevveze.png" alt="Mücevveze" class="card-image">
+                    <div class="card-title">Mücevveze</div>
+                </div>
+                <div class="card"><img src="sembolfoto/serdengecti.png" alt="Serdengeçti" class="card-image">
+                    <div class="card-title">Serdengeçti</div>
+                </div>
+                <div class="card"><img src="sembolfoto/pasali.png" alt="Paşalı" class="card-image">
+                    <div class="card-title">Paşalı</div>
+                </div>
+                <div class="card"><img src="sembolfoto/orfi.png" alt="Örfi" class="card-image">
+                    <div class="card-title">Örfi</div>
+                </div>
+                <div class="card"><img src="sembolfoto/ulemasarigi.png" alt="Ulema Sarığı" class="card-image">
+                    <div class="card-title">Ulema Sarığı</div>
+                </div>
+                <div class="card"><img src="sembolfoto/ilmiyesarigi.png" alt="İlmiye Sarığı" class="card-image">
+                    <div class="card-title">İlmiye Sarığı</div>
+                </div>
+                <div class="card"><img src="sembolfoto/azizi.png" alt="Azizi Fes" class="card-image">
+                    <div class="card-title">Azizi Fes</div>
+                </div>
+                <div class="card"><img src="sembolfoto/denizci.png" alt="Denizci" class="card-image">
+                    <div class="card-title">Denizci</div>
+                </div>
+                <div class="card"><img src="sembolfoto/kadin.png" alt="Kadın Mezar Taşı" class="card-image">
+                    <div class="card-title">Kadın Mezar Taşı</div>
+                </div>
+                <div class="card"><img src="sembolfoto/hotoz.png" alt="Hotoz" class="card-image">
+                    <div class="card-title">Hotoz</div>
+                </div>
+                <div class="card"><img src="sembolfoto/kadin2.png" alt="Kadın Mezar Taşı" class="card-image">
+                    <div class="card-title">Kadın Mezar Taşı</div>
+                </div>
+                <div class="card"><img src="sembolfoto/kadin3.png" alt="Kadın Mezar Taşı" class="card-image">
+                    <div class="card-title">Kadın Mezar Taşı</div>
+                </div>
+                <div class="card"><img src="sembolfoto/kirikgul.png" alt="Kadın Mezar Taşı - Kırık Gül" class="card-image">
+                    <div class="card-title">Kadın Mezar Taşı - Kırık Gül</div>
+                </div>
+                <div class="card"><img src="sembolfoto/azizifes.png" alt="Erkek Mezarı" class="card-image">
+                    <div class="card-title">Erkek Mezarı</div>
+                </div>
+            </div>
+
+            <div class="redirect-container">
+                <div class="redirect-div" onclick="window.location.href='/deneme/index.html';">Sembolleri Tara</div>
+                <div class="redirect-div" onclick="window.location.href='../sohbet.html';">Sembollerle Sohbet Et</div>
+                <div class="redirect-div" onclick="window.location.href='../index.html';">Anasayfaya Dön</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="modal" id="modal" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <div class="modal-header">
+                <div>
+                    <p class="modal-title" id="modalTitle">Önizleme</p>
+                    <span class="modal-counter" id="modalCounter"></span>
+                </div>
+                <button class="modal-close" id="modalClose" type="button">Kapat</button>
+            </div>
+
+            <div class="modal-body" id="modalBody">
+                <button class="modal-nav modal-prev" id="modalPrev" type="button" aria-label="Önceki">‹</button>
+                <button class="modal-nav modal-next" id="modalNext" type="button" aria-label="Sonraki">›</button>
+                <img id="modalImg" src="" alt="">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal elemanları
+    const modal = document.getElementById("modal");
+    const modalImg = document.getElementById("modalImg");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalCounter = document.getElementById("modalCounter");
+    const modalClose = document.getElementById("modalClose");
+    const modalPrev = document.getElementById("modalPrev");
+    const modalNext = document.getElementById("modalNext");
+    const modalBody = document.getElementById("modalBody");
+
+    // Kart görselleri
+    const images = Array.from(document.querySelectorAll(".card-image"));
+    let currentIndex = 0;
+
+    function updateModal(i) {
+      currentIndex = (i + images.length) % images.length;
+      const img = images[currentIndex];
+
+      modalImg.src = img.src;
+      modalImg.alt = img.alt || "Önizleme";
+      modalTitle.textContent = img.alt || "Önizleme";
+      modalCounter.textContent = `${currentIndex + 1} / ${images.length}`;
+    }
+
+    function openModal(i) {
+      updateModal(i);
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeModal() {
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+      modalImg.src = "";
+      document.body.style.overflow = "";
+    }
+
+    function nextImg() { updateModal(currentIndex + 1); }
+    function prevImg() { updateModal(currentIndex - 1); }
+
+    // Görsele tıklayınca modal aç (index ile)
+    images.forEach((img, idx) => {
+      img.addEventListener("click", () => openModal(idx));
+    });
+
+    // Butonlar
+    modalNext.addEventListener("click", (e) => { e.stopPropagation(); nextImg(); });
+    modalPrev.addEventListener("click", (e) => { e.stopPropagation(); prevImg(); });
+    modalClose.addEventListener("click", (e) => { e.stopPropagation(); closeModal(); });
+
+    // Arkaplana tıklayınca kapat
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    // Modal içerikte tıklamalar kapanmayı tetiklemesin
+    document.querySelector(".modal-content").addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+
+    // ESC ve ok tuşları
+    document.addEventListener("keydown", (e) => {
+      if (!modal.classList.contains("open")) return;
+
+      if (e.key === "Escape") closeModal();
+      if (e.key === "ArrowRight") nextImg();
+      if (e.key === "ArrowLeft") prevImg();
+    });
+
+    // ✅ Mobil swipe (sağa/sola kaydırma)
+    let startX = 0;
+    let endX = 0;
+    const SWIPE_THRESHOLD = 50; // px
+
+    modalBody.addEventListener("touchstart", (e) => {
+      startX = e.touches[0].clientX;
+      endX = startX;
+    }, { passive: true });
+
+    modalBody.addEventListener("touchmove", (e) => {
+      endX = e.touches[0].clientX;
+    }, { passive: true });
+
+    modalBody.addEventListener("touchend", () => {
+      const diff = endX - startX;
+
+      if (Math.abs(diff) > SWIPE_THRESHOLD) {
+        if (diff < 0) nextImg();   // sola kaydır -> sonraki
+        else prevImg();            // sağa kaydır -> önceki
+      }
+    }, { passive: true });
+    </script>
+</body>
+
+</html>

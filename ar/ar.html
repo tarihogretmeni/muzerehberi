@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Osmanlı Mezar Taşları — AR Koleksiyonu</title>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <style>
+        /* Tüm elementler için kutu modelini sıfırla */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            /* Tam ekran yüksekliği */
+            height: -webkit-fill-available;
+            /* iOS Safari için tam ekran fix */
+            background: #f0f0f0;
+            overflow: hidden;
+            /* Kaydırmayı engelle (uygulama hissi için) */
+        }
+
+        /* --- YENİ EKLENEN ANASAYFA BUTONU --- */
+        .home-button {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background-color: #ffffff;
+            color: #333;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            /* Her şeyin üstünde görünsün */
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: background-color 0.2s;
+        }
+
+        .home-button:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* ----------------------------------- */
+
+        /* Üst Kısım: Başlık ve Model */
+        .viewer-container {
+            flex: 1;
+            /* Kalan boşluğu doldur */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            position: relative;
+            padding-top: 40px;
+            /* Buton için üstten boşluk */
+            min-height: 0;
+            /* Flexbox taşma sorunu için */
+        }
+
+        h1 {
+            margin: 10px 0;
+            color: #333;
+            font-size: 22px;
+            /* Mobilde daha iyi sığması için biraz küçülttük */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        model-viewer {
+            width: 90%;
+            max-width: 600px;
+            /* Yükseklik %60'tan %45'e düşürüldü */
+            height: 45vh;
+            min-height: 250px;
+            /* Çok küçük ekranlarda aşırı küçülmeyi önle */
+            background-color: #e0e0e0;
+            border-radius: 15px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        p.ar-hint {
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+            text-align: center;
+            padding: 0 10px;
+        }
+
+        /* Alt Kısım: Küçük Resimler (Thumbnails) */
+        .thumbnail-container {
+            /* Sabit yükseklik ve büzülmeme ayarı (mobilde kaybolmaması için) */
+            height: 130px;
+            flex-shrink: 0;
+
+            width: 100%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Ortala */
+            gap: 15px;
+            padding: 10px 20px;
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+            /* Yan yana kaydırma */
+            -webkit-overflow-scrolling: touch;
+            /* iOS için akıcı kaydırma */
+        }
+
+        /* Dar ekranlarda sığmazsa sola yaslayıp kaydırmaya izin ver */
+        @media (max-width: 600px) {
+            .thumbnail-container {
+                justify-content: flex-start;
+                padding-left: 15px;
+                /* Mobilde başlangıç boşluğu */
+            }
+
+            h1 {
+                font-size: 20px;
+                margin-top: 15px;
+            }
+        }
+
+        /* Kaydırma çubuğu gizleme (daha temiz görünüm için opsiyonel) */
+        .thumbnail-container::-webkit-scrollbar {
+            display: none;
+            /* Chrome, Safari, Opera */
+        }
+
+        .thumbnail-container {
+            -ms-overflow-style: none;
+            /* IE and Edge */
+            scrollbar-width: none;
+            /* Firefox */
+        }
+
+
+        .thumbnail {
+            min-width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 3px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            object-fit: cover;
+            background-color: #eee;
+            /* Mobilde resimlerin basık görünmemesi için */
+            flex-shrink: 0;
+        }
+
+        .thumbnail:hover {
+            transform: scale(1.1);
+            border-color: #aaa;
+        }
+
+        /* Seçili olanın stili */
+        .thumbnail.active {
+            border-color: #d9534f;
+            transform: scale(1.15);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+
+    <a href="../index.html" class="home-button">
+        <span>🏠</span> Anasayfa
+    </a>
+
+    <div class="viewer-container">
+        <h1 id="charTitle">Dardağan</h1>
+
+        <model-viewer id="arModel" src="models/dardagan.glb" alt="3D Model" ar ar-modes="webxr scene-viewer quick-look"
+            camera-controls auto-rotate shadow-intensity="1" environment-image="neutral">
+        </model-viewer>
+
+        <p class="ar-hint">
+            AR moduna geçmek için modele tıklayın veya sağ alttaki ikonu kullanın.
+        </p>
+    </div>
+
+    <div class="thumbnail-container" id="thumbList">
+    </div>
+
+    <script>
+        const characters = [
+         { id: 'orfi',           name: 'Dardağan' },              // 1.glb
+  { id: 'hotoz',           name: 'Hotoz' },    // 2.glb
+
+  { id: 'burma',       name: 'Burma Sarıklı Başlık' },  // burmu.glb
+  { id: 'erkek1',      name: 'Erkek Mezar Taşı 1' },    // erkek1.glb
+  { id: 'erkek2',      name: 'Erkek Mezar Taşı 2' },    // erkek2.glb
+  { id: 'fes',         name: 'Fes Başlık' },            // fes.glb
+  { id: 'hotoz',       name: 'Hotoz Başlık' },          // hotoz.glb
+
+  { id: 'kadin',       name: 'Kadın Mezar Taşı 1' },    // kadin.glb
+  { id: 'kadin2',      name: 'Kadın Mezar Taşı 2' },    // kadin2.glb
+  { id: 'kadin3',      name: 'Kadın Mezar Taşı 3' },    // kadin3.glb
+
+  { id: 'kallavi',     name: 'Kallavi Başlık' },        // kallavi.glb
+  { id: 'mucevveze',    name: 'Mücevveze Başlık' },       // muceveze.glb
+  { id: 'orfi',name: 'Örfi Destarlı Başlık' },  // orfidestarli.glb
+
+  { id: 'osmanlimezar',name: 'Osmanlı Mezar Taşı' },    // osmanlimezar.glb
+  { id: 'toplumezar',  name: 'Toplu Mezar' }            // toplumezar.glb
+    ];
+
+    const viewer = document.getElementById('arModel');
+    const title = document.getElementById('charTitle');
+    const thumbList = document.getElementById('thumbList');
+
+    // KLASÖR YOLLARI (Değişmedi)
+    const modelPath = 'models/'; 
+    const imagePath = 'foto/';   
+    const modelExt = '.glb';
+    const imgExt = '.png'; 
+
+    characters.forEach((char, index) => {
+        const img = document.createElement('img');
+        img.src = imagePath + char.id + imgExt; 
+        img.alt = char.name;
+        img.className = 'thumbnail';
+        
+        if(index === 0) img.classList.add('active');
+
+        img.addEventListener('click', () => {
+            title.innerText = char.name;
+            viewer.src = modelPath + char.id + modelExt;
+            viewer.alt = char.name + " Modeli";
+
+            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+            img.classList.add('active');
+        });
+
+        thumbList.appendChild(img);
+    });
+
+    </script>
+</body>
+
+</html>

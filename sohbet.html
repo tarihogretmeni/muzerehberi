@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Mobil uyumlu görünüm için -->
+    <title>Tarihin Sessiz Tanıkları - Osmanlı Mezar Taşları</title>
+    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat@latest/dist/style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        html,
+        body,
+        #n8n-chat {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        #n8n-chat {
+            width: 100%;
+            height: 100%;
+        }
+
+        .n8n-chat-header {
+            background-color: #e74266;
+            color: #ffffff;
+            font-size: 1.5rem;
+            padding: 10px;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.2;
+        }
+
+        .n8n-chat-subtitle {
+            font-size: 1rem;
+            color: #ffffff;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.2;
+        }
+
+        .n8n-chat-input input {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        .n8n-chat-info {
+            font-size: 1rem;
+            color: #101330;
+            font-family: 'Inter', sans-serif;
+            text-align: center;
+            padding: 10px;
+        }
+
+        @media screen and (max-width: 768px) {
+            .n8n-chat-header {
+                font-size: 1.3rem;
+                padding: 8px;
+            }
+
+            .n8n-chat-subtitle {
+                font-size: 0.9rem;
+            }
+
+            .n8n-chat-input input {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .n8n-chat-header {
+                font-size: 1.1rem;
+                padding: 6px;
+            }
+
+            .n8n-chat-subtitle {
+                font-size: 0.8rem;
+            }
+
+            .n8n-chat-input input {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="n8n-chat"></div>
+
+    <script type="module">
+        import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat@latest/dist/chat.bundle.es.js';
+
+    createChat({
+      webhookUrl: 'https://primary-production-2d742.up.railway.app/webhook/965d7ae0-f5ab-4134-8690-3e5b4e3da881/chat',
+      target: '#n8n-chat',
+      mode: 'fullscreen',
+      showWelcomeScreen: false,
+      defaultLanguage: 'tr',
+      initialMessages: [
+        'Merhaba! 👋',
+        'Osmanlı dönemi mezar taşları hakkında merak ettiklerini sorabilirsin...'
+      ],
+      i18n: {
+        tr: {
+          title: 'Tarihin Sessiz Tanıkları - Osmanlı Mezar Taşları',
+        subtitle: 'Rehberin her yerde seninle...',
+          inputPlaceholder: 'Mesajınızı buraya yazın',
+          getStarted: 'Yeni Konuşma'
+        }
+      }
+    });
+    </script>
+</body>
+
+</html>

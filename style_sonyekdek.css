@@ -1,0 +1,66 @@
+/* Genel stil */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #f4f4f4;
+}
+
+/* Container stil */
+.container {
+  width: 100vw;
+  height: 100vh; /* Tüm ekran yüksekliği */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: black;
+  box-sizing: border-box;
+  padding: 20px;
+}
+
+/* Başlık stil */
+h1 {
+  font-size: 4vw;
+  margin-bottom: 20px;
+}
+
+/* Ekran genişliğine göre başlık boyutu düzenlemesi */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 6vw;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 8vw;
+  }
+}
+
+/* Resim stili */
+.bg-image {
+  width: 100%;
+  height: auto;
+  max-width: 600px;
+  display: block;
+  margin: 0 auto 20px;
+}
+
+/* Buton stili */
+button {
+  padding: 15px 30px;
+  font-size: 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #45a049;
+}

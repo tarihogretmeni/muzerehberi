@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Sanal Müze — 10 Mergen Modeli</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- A-Frame -->
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+        }
+
+        .credit {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            z-index: 9999;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="credit">Sanal Müze · 10 Mergen Modeli · VR Uyumlu</div>
+
+    <a-scene renderer="antialias: true" vr-mode-ui="enabled: true">
+
+        <!-- Kamera -->
+        <a-entity id="rig" position="0 0 4">
+            <a-entity camera position="0 1.6 0" look-controls wasd-controls></a-entity>
+        </a-entity>
+
+        <!-- Işıklar -->
+        <a-entity light="type: ambient; intensity: 1"></a-entity>
+        <a-entity light="type: directional; intensity: 0.7" position="4 6 2"></a-entity>
+
+        <!-- Zemin -->
+        <a-plane width="60" height="20" rotation="-90 0 0" color="#eee"></a-plane>
+
+
+        <!-- ========================================================= -->
+        <!--            10 ADET MERGEN MODELİ OLUŞTURMA              -->
+        <!-- ========================================================= -->
+
+        <!-- Mergen bileşeni -->
+        <script>
+            AFRAME.registerComponent('yaklasinca-bilgi', {
+      schema: {
+        yazi: {type: 'string'},
+        mesafe: {type: 'number', default: 2.5}
+      },
+      init: function () {
+        this.kamera = document.querySelector('[camera]').object3D;
+        this.bilgiId = this.el.getAttribute('id').replace('model', 'pano');
+        this.pano = document.getElementById(this.bilgiId);
+        this.okundu = false;
+      },
+      tick: function () {
+        const modelPos = new THREE.Vector3();
+        const camPos = new THREE.Vector3();
+
+        this.el.object3D.getWorldPosition(modelPos);
+        this.kamera.getWorldPosition(camPos);
+
+        const dist = camPos.distanceTo(modelPos);
+
+        if (dist < this.data.mesafe) {
+          this.pano.setAttribute("visible", "true");
+
+          if (!this.okundu) {
+            this.okundu = true;
+            if ('speechSynthesis' in window) {
+              speechSynthesis.cancel();
+              const u = new SpeechSynthesisUtterance(this.data.yazi);
+              u.lang = 'tr-TR';
+              speechSynthesis.speak(u);
+            }
+          }
+        } else {
+          this.pano.setAttribute("visible", "false");
+          this.okundu = false;
+        }
+      }
+    });
+        </script>
+
+
+        <!-- ======== 10 MODEL + PANO OTOMATİK ÜRETİM ========= -->
+
+        <!-- 10 modeli x ekseninde yan yana diziyoruz -->
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+      const scene = document.querySelector("a-scene");
+
+      for (let i = 1; i <= 10; i++) {
+
+        const x = (i - 1) * 3;   // her model 3 metre arayla
+
+        // MODEL
+        const model = document.createElement("a-entity");
+        model.setAttribute("id", "model" + i);
+        model.setAttribute("gltf-model", "models/mergen.glb");
+        model.setAttribute("position", `${x} 0 -4`);
+        model.setAttribute("scale", "1.6 1.6 1.6");
+        model.setAttribute("yaklasinca-bilgi", `yazi: ${i}. Mergen modeli;`);
+
+        // BİLGİ PANO
+        const pano = document.createElement("a-entity");
+        pano.setAttribute("id", "pano" + i);
+        pano.setAttribute("position", `${x} 1.4 -1.8`);
+        pano.setAttribute("visible", "false");
+
+        const panoArka = document.createElement("a-plane");
+        panoArka.setAttribute("width", "2.4");
+        panoArka.setAttribute("height", "1");
+        panoArka.setAttribute("color", "#fff");
+        panoArka.setAttribute("opacity", "0.95");
+
+        const panoYazi = document.createElement("a-text");
+        panoYazi.setAttribute("value", `${i}. Mergen Modeli`);
+        panoYazi.setAttribute("align", "center");
+        panoYazi.setAttribute("color", "#111");
+        panoYazi.setAttribute("width", "2");
+        panoYazi.setAttribute("position", "-1 0 0.01");
+
+        pano.appendChild(panoArka);
+        pano.appendChild(panoYazi);
+
+        scene.appendChild(model);
+        scene.appendChild(pano);
+      }
+    });
+        </script>
+
+    </a-scene>
+
+</body>
+
+</html>
