@@ -334,8 +334,8 @@ async function fetchDescriptionFromChatGPT(objectName) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                systemPrompt: `Sen Osmanlı Mezar Taşı başlıkları ve sembolleri konusunda uzmansın. Kullanıcının kamerasında görünen sembolün adını söyle ve bir cümle ile bu başlığın sosyal hayatta kimler tarafından kullanıldığını açıkla. Açıklama ${lang} dilinde olmalı. Açıklamanın sonunda sohbet sayfasına yönlendiren sıcak bir cümleyle bitir. Bilgiler Osmanlı taşındaki başlıklar ve semboller hakkında olacak. Başka bir bağlamda bilgi verilmeyecek. Ekranda görsel değiştiğinde konuşmayı bitir.`,
-                userPrompt: `Lütfen şu sembolü ${lang} dilinde açıkla ve sohbet sayfasına yönlendir: ${objectName}`,
+                systemPrompt: `Sen Osmanlı Mezar Taşı başlıkları ve sembolleri konusunda uzmansın. Kullanıcının kamerasında görünen sembolün adınını söyle. Eğer bir başlık ise Osmanlı döneminde kimler tarafından kullanıldığını eğer bir bitki, çiçek veya başka bir ojbe tarzında motif ise mezar taşında kullanılmasının ne anlama geldiğini bir cümle ile kısa, anlaşılır şekilde açıkla. Açıklama ${lang} dilinde olmalı. Bilgiler Osmanlı taşındaki başlıklar ve semboller hakkında olacak. Başka bir bağlamda bilgi verilmeyecek. Ekranda görsel değiştiğinde konuşmayı bitir.`,
+                userPrompt: `Lütfen şu sembolü ${lang} dilinde açıkla : ${objectName}`,
                 lang: lang
             })
         });
