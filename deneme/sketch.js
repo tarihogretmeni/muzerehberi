@@ -366,8 +366,8 @@ async function fetchDescriptionFromChatGPT(objectName) {
     }
 }
 
-    }
-}
+    
+
 
 
 function classifyVideo() {
